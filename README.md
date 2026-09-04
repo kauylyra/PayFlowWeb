@@ -1,59 +1,42 @@
-# PayFlowWeb
+# PayFlow Web
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.6.
+Frontend do **PayFlow**, uma aplicação desenvolvida com **Angular** para consumir uma API REST construída em **C#/.NET 8**.
 
-## Development server
+A ideia do projeto é construir uma aplicação de pagamentos de ponta a ponta, praticando principalmente desenvolvimento de APIs, integração entre frontend e backend e organização de uma aplicação Angular.
 
-To start a local development server, run:
+## 🚀 Funcionalidades
 
-```bash
-ng serve
-```
+* Cadastro de clientes
+* Listagem de clientes
+* Busca por nome, e-mail, documento ou data de criação
+* Alteração de clientes
+* Exclusão de clientes
+* Formulários reutilizáveis para cadastro e alteração
+* Validação e tratamento de dados
+* Mensagens de sucesso e erro
+* Integração com API
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+O módulo de pagamentos está sendo desenvolvido e fará parte das próximas etapas do projeto.
 
-## Code scaffolding
+## 🛠️ Tecnologias
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+* Angular
+* TypeScript
+* HTML5
+* CSS
+* Angular Material
 
-```bash
-ng generate component component-name
-```
+## 📌 Sobre o projeto
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+O PayFlow é um projeto pessoal que estou desenvolvendo para colocar em prática conhecimentos de **backend e frontend**, principalmente C#/.NET e Angular.
 
-```bash
-ng generate --help
-```
+Além de funcionar como uma aplicação real, o projeto também serve como ambiente de estudo para experimentar novas tecnologias e melhorar a organização, manutenção e evolução do código.
 
-## Building
+## 🔨 — projeto em desenvolvimento...
 
-To build the project run:
+Próximos passos:
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+* Cadastro de pagamentos
+* Consulta dos pagamentos de um cliente
+* Alteração do status de pagamentos
+* Tela de detalhes do cliente
