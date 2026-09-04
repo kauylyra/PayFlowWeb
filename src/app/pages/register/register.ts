@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
-import { Form } from "../../components/form/form";
-import { CustomerList } from '../../models/Customer';
+
+import { Form } from '../../components/form/form';
+
+import { CustomerAdd } from '../../models/Customer';
+
 import { CustomerService } from '../../services/customer';
+
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,12 +16,42 @@ import { Router } from '@angular/router';
 })
 export class Register {
 
-  constructor(private serviceCustomer: CustomerService, private router: Router) {}
+  constructor(
+    private serviceCustomer: CustomerService,
+    private router: Router
+  ) {}
 
-  AddCustomer(customer: CustomerList) {
-  this.serviceCustomer.AddCustomer(customer).subscribe(response => {
-    console.log('Customer added successfully:', response);
-    this.router.navigate(['/']);
-  })
+  AddCustomer(customer: CustomerAdd): void {
+
+    this.serviceCustomer.AddCustomer(customer)
+      .subscribe({
+
+        next: (response) => {
+
+          console.log(
+            'Customer cadastrado com sucesso:',
+            response
+          );
+
+          this.router.navigate(['/'], {
+
+            state: {
+              message: 'Cliente cadastrado com sucesso!'
+            }
+
+          });
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Erro ao cadastrar cliente:',
+            error
+          );
+
+        }
+
+      });
   }
 }

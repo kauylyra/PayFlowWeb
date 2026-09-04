@@ -1,124 +1,159 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
+
 import { CustomerService } from '../../services/customer';
-import { CustomerList, CustomerAdd } from '../../models/Customer';
-import { Observable } from 'rxjs';
-import { RouterLink, RouterLinkActive, RouterModule } from "@angular/router";
+
+import { CustomerList } from '../../models/Customer';
+
+import {
+  RouterLink,
+  RouterLinkActive,
+  RouterModule,
+  Router
+} from '@angular/router';
 
 @Component({
-  imports: [CommonModule, RouterLink, RouterLinkActive, RouterModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterModule
+],
   standalone: true,
   selector: 'app-home',
   styleUrl: './home.css',
   templateUrl: './home.html',
 })
-
 export class Home implements OnInit {
+
   customers: CustomerList[] = [];
   customersGeneral: CustomerList[] = [];
-  selectedCustomer: CustomerList | null = null;
 
-  loading = false;
   message = '';
   errorMessage = '';
 
-  constructor(private serviceCustomer: CustomerService) {}
+  constructor(
+    private serviceCustomer: CustomerService,
+    private cdr: ChangeDetectorRef,
+    private router: Router
+  ) {}
 
-  
   ngOnInit(): void {
-    this.serviceCustomer.GetCustomers().subscribe(response => {
-        this.customers = response.result;
-        this.customersGeneral = response.result;
-      });
+
+    const state = history.state;
+
+    if (state?.message) {
+      this.message = state.message;
+
+      history.replaceState({}, document.title, window.location.href);
+    }
+
+    this.loadCustomers();
   }
 
- searchCustomer(event: Event) {
-const target = event.target as HTMLInputElement; 
-const value = target.value.toLowerCase();
-this.customers = this.customersGeneral.filter(customer =>{
-return  customer.name.toLowerCase().includes(value) 
- })
-}
+  loadCustomers(): void {
 
-deleteCustomer(id: number) {
-  this.serviceCustomer.DeleteCustomer(id).subscribe({
-    next: () => {
-      this.customers = this.customers.filter(customer => customer.id !== id);
-      this.customersGeneral = this.customersGeneral.filter(customer => customer.id !== id);
-      this.message = 'Customer deletado com sucesso.';
-      window.location.reload();
-    },
-    error: (error) => {
-      console.error(this.message);
-      this.errorMessage = 'Erro ao deletar Customer.';
-    }
+    this.serviceCustomer.GetCustomers().subscribe({
+
+      next: (response) => {
+
+        this.customers = response.result;
+        this.customersGeneral = response.result;
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Erro ao buscar clientes:',
+          error
+        );
+
+        this.errorMessage =
+          'Erro ao carregar clientes.';
+
+        this.cdr.detectChanges();
+
+      }
+
+    });
+  }
+
+searchCustomer(event: Event): void {
+
+  const target = event.target as HTMLInputElement;
+
+  const value = target.value.toLowerCase().trim();
+
+  this.customers = this.customersGeneral.filter(customer => {
+
+    const name = customer.name
+      .toLowerCase();
+
+    const email = customer.email
+      .toLowerCase();
+
+    const document = customer.document
+      .toLowerCase();
+
+    const createdAt = new Date(customer.createdAt)
+      .toLocaleDateString('pt-BR');
+
+    return (
+      name.includes(value) ||
+      email.includes(value) ||
+      document.includes(value) ||
+      createdAt.includes(value)
+    );
   });
+
+  this.cdr.detectChanges();
 }
-  
 
-  // ngOnInit(): void {
-  //   this.loadCustomers();
-  // }
+  deleteCustomer(id: number): void {
 
-  // loadCustomers(): void {
-  //   this.loading = true;
-  //   this.clearMessages();
+    this.serviceCustomer.DeleteCustomer(id)
+      .subscribe({
 
-  //   this.serviceCustomer.GetCustomers().subscribe({
-  //     next: (response) => {
-  //       this.customers = response.result ?? [];
-  //       this.loading = false;
-  //     },
-  //     error: (error) => this.showError(error, 'Erro ao buscar clientes.'),
-  //   });
-  // }
+        next: () => {
 
-  // saveCustomer(name: string, email: string, document: string): void {
-  //   const customer: CustomerPayload = {
-  //     name,
-  //     email,
-  //     document,
-  //   };
+          this.customers =
+            this.customers.filter(
+              customer => customer.id !== id
+            );
 
-  //   this.clearMessages();
+          this.customersGeneral =
+            this.customersGeneral.filter(
+              customer => customer.id !== id
+            );
 
-  //   this.serviceCustomer.AddCustomer(customer).subscribe({
-  //     next: () => {
-  //       this.message = 'Cliente cadastrado com sucesso.';
-  //       this.loadCustomers();
-  //     },
-  //     error: (error) => this.showError(error, 'Erro ao cadastrar cliente.'),
-  //   });
-  // }
+          this.message =
+            'Cliente deletado com sucesso.';
 
-  // searchCustomerById(id: string): void {
-  //   const customerId = Number(id);
+          this.cdr.detectChanges();
 
-  //   if (!customerId) {
-  //     this.errorMessage = 'Informe um ID válido para buscar.';
-  //     return;
-  //   }
+        },
 
-  //   this.clearMessages();
+        error: (error) => {
 
-  //   this.serviceCustomer.GetCustomerById(customerId).subscribe({
-  //     next: (response) => {
-  //       this.selectedCustomer = response.result;
-  //       this.message = 'Cliente encontrado.';
-  //     },
-  //     error: (error) => this.showError(error, 'Cliente não encontrado.'),
-  //   });
-  // }
+          console.error(
+            'Erro ao deletar cliente:',
+            error
+          );
 
-  // private clearMessages(): void {
-  //   this.message = '';
-  //   this.errorMessage = '';
-  // }
+          this.errorMessage =
+            'Erro ao deletar cliente.';
 
-  // private showError(error: unknown, defaultMessage: string): void {
-  //   console.error(error);
-  //   this.errorMessage = defaultMessage;
-  //   this.message = '';
-  //   this.loading = false;
-  // }
+          this.cdr.detectChanges();
+
+        }
+
+      });
+  }
 }

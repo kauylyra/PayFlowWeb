@@ -1,3 +1,7 @@
-<div>
-    <app-form [customerData]="customer"></app-form>
-</div>
+@if (customer) {
+  <app-form
+    [customerData]="customer"
+    [isEditMode]="true"
+    (onSubmit)="UpdateCustomer(customer.id, $event)">
+  </app-form>
+}

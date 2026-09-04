@@ -1,134 +1,158 @@
-<p>Pay Flow</p>
-<div class="container mt-5"> 
-  <button class="btn btn-success w-100" [routerLink]="['/register']" routerLinkActive="router-link-active">Cadastrar Novo Usuário</button>
-  <div>
-    <label> Pesquisar:</label>
-    <input type="text" class="form-control" placeholder="Digite o nome do usuário" (input)="searchCustomer($event)">
+<div class="container mt-4">
+
+  <!-- CABEÇALHO -->
+  <div class="page-header">
+
+    <h1 class="payflow-title">
+      Pay Flow
+    </h1>
+
+          <button
+            type="button"
+            class="register-button"
+            [routerLink]="['/register']">
+            + Cadastrar Novo Usuário
+          </button>   
+  </div>
+  
+
+  <!-- MENSAGEM DE SUCESSO -->
+  @if (message) {
+    <div class="alert alert-success mt-3">
+      {{ message }}
+    </div>
+  }
+
+  <!-- MENSAGEM DE ERRO -->
+  @if (errorMessage) {
+    <div class="alert alert-danger mt-3">
+      {{ errorMessage }}
+    </div>
+  }
+
+  <!-- PESQUISA -->
+  <div class="search-container">
+
+    <label
+      for="search"
+      class="search-label">
+      Pesquisar cliente
+    </label>
+
+    <input
+      id="search"
+      type="text"
+      class="search-input"
+      placeholder="Digite o nome do usuário"
+      (input)="searchCustomer($event)">
+
+   
+
+  </div>
+  
+
+  <!-- TABELA -->
+  <div class="table-container">
+
+    <table class="customers-table">
+
+      <thead>
+
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>E-mail</th>
+          <th>Documento</th>
+          <th>Criado em</th>
+          <th>Atualizado em</th>
+          <th>Pagamentos</th>
+          <th>Ações</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        @if (customers.length > 0) {
+
+          @for (customer of customers; track customer.id) {
+
+            <tr>
+
+              <td>{{ customer.id }}</td>
+
+              <td class="customer-name">
+                {{ customer.name }}
+              </td>
+
+              <td>{{ customer.email }}</td>
+
+              <td>
+                {{ customer.document.substring(0, 3) }}.{{ customer.document.substring(3, 6) }}.{{ customer.document.substring(6, 9) }}-{{ customer.document.substring(9, 11) }}
+              </td>
+
+              <td>
+                {{ customer.createdAt | date:'dd/MM/yyyy' }}
+              </td>
+
+              <td>
+                {{ customer.updatedAt | date:'dd/MM/yyyy' }}
+              </td>
+
+              <td class="payment-count">
+                {{ customer.payments?.length ?? 0 }}
+              </td>
+
+              <td>
+
+                <div class="action-buttons">
+
+                  <button
+                    type="button"
+                    class="action-button edit-button"
+                    [routerLink]="['/update', customer.id]">
+                    Editar
+                  </button>
+
+                  <button
+                    type="button"
+                    class="action-button details-button">
+                    Detalhes
+                  </button>
+
+                  <button
+                    type="button"
+                    class="action-button delete-button"
+                    (click)="deleteCustomer(customer.id)">
+                    Excluir
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          }
+
+        } @else {
+
+          <tr>
+
+            <td
+              colspan="8"
+              class="empty-message">
+              Nenhum usuário encontrado.
+            </td>
+
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
   </div>
 
-  <table class="table table-hover table-bordered mt-5">
-    <thead class="table-dark">
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>E-mail</th>
-        <th>Documento</th>
-        <th>Criado em</th>
-        <th>Atualizado em</th>
-        <th>Pagamentos</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      @if (customers.length > 0) {
-        @for (customer of customers; track $index) {
-      <tr *ngFor="let customer of customers">
-        <td>{{ customer.id }}</td>
-        <td>{{ customer.name }}</td>
-        <td>{{ customer.email }}</td>
-        <td>{{ customer.document }}</td>
-        <td>{{ customer.createdAt }}</td>
-        @if (customer.updatedAt != null) {
-          <td>{{ customer.updatedAt }}</td>
-        }
-        <td>{{ customer.payments.length }}</td>
-        <td>
-          <button type="button" class="btn btn-primary mx-2" [routerLink]="['/update', customer.id]"> Editar </button>
-          <button type="button" class="btn btn-info mx-2"> Detalhes </button>
-          <button type="button" class="btn btn-danger mx-2" (click)="deleteCustomer(customer.id)"> Excluir </button>
-        </td>
-      </tr>
-        }
-      }
-      @else {
-        <tr>
-          <td colspan="8" class="text-center">Nenhum usuário encontrado.</td>
-        </tr>
-      }
-    </tbody>
-  </table>
 </div>
-
-<!-- <main class="container">
-  <header class="topo">
-    <div>
-      <p class="subtitulo">PayFlow</p>
-      <h1>Clientes</h1>
-    </div>
-
-    <button type="button" (click)="loadCustomers()">Atualizar lista</button>
-  </header>
-
-  <p class="mensagem sucesso" *ngIf="message">{{ message }}</p>
-
-  <p class="mensagem erro" *ngIf="errorMessage">{{ errorMessage }}</p>
-
-  <section class="area">
-    <div class="bloco">
-      <h2>Cadastrar cliente</h2>
-
-      <form class="formulario" (submit)="saveCustomer(name.value, email.value, document.value); name.value = ''; email.value = ''; document.value = ''; $event.preventDefault()">
-        <label>
-          Nome
-          <input type="text" #name required>
-        </label>
-
-        <label>
-          E-mail
-          <input type="email" #email required>
-        </label>
-
-        <label>
-          Documento
-          <input type="text" #document required>
-        </label>
-
-        <button type="submit">Salvar cliente</button>
-      </form>
-    </div>
-
-    <div class="bloco">
-      <h2>Buscar cliente</h2>
-
-      <div class="linha-form">
-        <input type="number" placeholder="ID do cliente" #customerId>
-        <button type="button" (click)="searchCustomerById(customerId.value)">Buscar</button>
-      </div>
-
-      <div class="resultado" *ngIf="selectedCustomer">
-        <strong>{{ selectedCustomer.name }}</strong>
-        <span>{{ selectedCustomer.email }}</span>
-        <span>{{ selectedCustomer.document }}</span>
-      </div>
-    </div>
-  </section>
-
-  <section class="bloco">
-    <div class="cabecalho-lista">
-      <h2>Clientes cadastrados</h2>
-      <span *ngIf="loading">Carregando...</span>
-    </div>
-
-    <div class="tabela" *ngIf="customers.length > 0; else noCustomers">
-      <div class="linha cabecalho">
-        <span>ID</span>
-        <span>Nome</span>
-        <span>E-mail</span>
-        <span>Documento</span>
-        <span>Pagamentos</span>
-      </div>
-
-      <div class="linha" *ngFor="let customer of customers">
-        <span>{{ customer.id }}</span>
-        <span>{{ customer.name }}</span>
-        <span>{{ customer.email }}</span>
-        <span>{{ customer.document }}</span>
-        <span>{{ customer.payments.length }}</span>
-      </div>
-    </div>
-
-    <ng-template #noCustomers>
-      <p>Nenhum cliente encontrado.</p>
-    </ng-template>
-  </section>
-</main> -->
