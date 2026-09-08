@@ -16,7 +16,6 @@ export interface CustomerPayment {
   description: string | null;
   createdAt: string;
 }
-
 export interface CustomerAdd {
   name: string;
   email: string;

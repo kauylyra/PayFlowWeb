@@ -46,13 +46,9 @@ export class Update implements OnInit {
 
       next: (response) => {
 
-        console.log('CLIENTE RECEBIDO:', response);
-
         if (response.result) {
 
           this.customer = response.result;
-
-          console.log('CUSTOMER ATRIBUÍDO:', this.customer);
 
           this.cdr.detectChanges();
 
