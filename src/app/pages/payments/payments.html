@@ -1,0 +1,224 @@
+<div class="container mt-4">
+
+  <!-- CABEÇALHO -->
+  <div class="page-header">
+
+    <h1 class="payflow-title">
+      Pagamentos de: {{ customer?.name || '-' }}
+    </h1>
+
+  </div>
+
+
+  <!-- MENSAGEM DE SUCESSO -->
+  @if (message) {
+    <div class="alert alert-success mt-3">
+      {{ message }}
+    </div>
+  }
+
+
+  <!-- MENSAGEM DE ERRO -->
+  @if (errorMessage) {
+    <div class="alert alert-danger mt-3">
+      {{ errorMessage }}
+    </div>
+  }
+
+
+  <!-- INFORMAÇÕES DO CLIENTE -->
+  <!-- @if (customer) {
+
+    <div class="customer-info mt-4">
+
+      <h3>Cliente</h3>
+
+      <p>
+        <strong>Nome:</strong>
+        {{ customer.name }}
+      </p>
+
+      <p>
+        <strong>E-mail:</strong>
+        {{ customer.email }}
+      </p>
+
+      <p>
+        <strong>Documento:</strong>
+        {{ customer.document }}
+      </p>
+
+    </div>
+
+  } -->
+
+
+  <!-- PESQUISA -->
+  <div class="search-container">
+
+    <label
+      for="search"
+      class="search-label">
+      Pesquisar pagamento
+    </label>
+
+    <input
+      id="search"
+      type="text"
+      class="search-input"
+      placeholder="Digite a descrição, status ou valor"
+      (input)="searchPayment($event)">
+
+  </div>
+
+
+  <!-- TABELA -->
+  <div class="table-container">
+
+    <table class="customers-table">
+
+      <thead>
+
+        <tr>
+          <th>ID</th>
+          <!-- <th>Cliente</th> -->
+          <th>Valor</th>
+          <th>Status</th>
+          <th>Método</th>
+          <th>Descrição</th>
+          <th>Criado em</th>
+          <th>Atualizado em</th>
+          <th>Ações</th>
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        @if (payments.length > 0) {
+
+          @for (payment of payments; track payment.id) {
+
+            <tr>
+
+              <!-- ID -->
+              <td>
+                {{ payment.id }}
+              </td>
+
+
+              <!-- CLIENTE
+              <td class="customer-name">
+                {{ customer?.name || '-' }}
+              </td> -->
+
+
+              <!-- VALOR -->
+              <td>
+                {{ payment.amount | currency:'BRL' }}
+              </td>
+
+
+              <!-- STATUS -->
+              <td>
+                {{ payment.status }}
+              </td>
+
+
+              <!-- MÉTODO -->
+              <td>
+                {{ payment.paymentMethod?.name || '-' }}
+              </td>
+
+
+              <!-- DESCRIÇÃO -->
+              <td>
+                {{ payment.description || '-' }}
+              </td>
+
+
+              <!-- CRIADO EM -->
+              <td>
+                {{ payment.createdAt | date:'dd/MM/yyyy' }}
+              </td>
+
+
+              <!-- ATUALIZADO EM -->
+              <td>
+                {{ payment.updatedAt ? (payment.updatedAt | date:'dd/MM/yyyy') : '-' }}
+              </td>
+
+
+              <!-- AÇÕES -->
+              <td>
+
+                <div class="action-buttons">
+
+                  <button
+                    type="button"
+                    class="action-button edit-button"
+                    [routerLink]="['/payment/update', payment.id]">
+                    Editar
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="action-button details-button"
+                    [routerLink]="['/payment/details', payment.id]">
+                    Detalhes
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="action-button delete-button"
+                    (click)="deletePayment(payment.id)">
+                    Excluir
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          }
+
+        } @else {
+
+          <tr>
+
+            <td
+              colspan="9"
+              class="empty-message">
+
+              Não há pagamentos para este cliente.
+
+            </td>
+
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+
+  <!-- VOLTAR -->
+  <div class="d-flex justify-content-end mt-4">
+
+    <button
+      type="button"
+      class="btn btn-danger"
+      [routerLink]="['/']">
+      Voltar
+    </button>
+
+  </div>
+
+</div>

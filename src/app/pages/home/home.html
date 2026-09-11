@@ -99,10 +99,22 @@
                 {{ customer.updatedAt | date:'dd/MM/yyyy' }}
               </td>
 
-              <td class="payment-count">
-                {{ customer.payments?.length ?? 0 }}
-              </td>
-
+                @if (customer.payments && customer.payments.length > 0) {
+                <td>
+                  <button
+                    id="botaoPaymentsList"
+                    type="button"
+                    class="action-button details-Paybutton"
+                    [routerLink]="['/payments', customer.id]"
+                    title="Detalhes do pagamento">
+                    {{ customer.payments.length }}
+                  </button>
+                </td>
+              } @else {
+                <td>
+                  <span class="no-payments" title="Não há pagamentos">0</span>
+                </td>
+              }
               <td>
 
                 <div class="action-buttons">
